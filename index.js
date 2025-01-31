@@ -36,6 +36,7 @@ for (const file of autocompleteFiles) {
 
 client.on('ready', () => {
   console.log(`${GREEN}[PROCESS]${RESET} Bot 已上線`)
+  require('./features/presence.js')(client)
 })
 
 client.on('interactionCreate', interaction => {
