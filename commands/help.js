@@ -51,7 +51,7 @@ module.exports = {
 
 function format(string, size) {
   if (string.length < size) {
-    for (let i=string.length i<size i++) string += ' '
+    for (let i=string.length; i<size; i++) string += ' '
   }
   return string
 }
