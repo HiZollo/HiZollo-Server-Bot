@@ -4,7 +4,9 @@
   "description": "A Discord bot used in the HiZollo Official Discord server.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "deploy": "node deploy/deploy.js",
+    "clear": "node deploy/clear.js"
   },
   "repository": {
     "type": "git",
