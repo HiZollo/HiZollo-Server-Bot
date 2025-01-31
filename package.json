@@ -1,0 +1,23 @@
+{
+  "name": "@hizollo/hizollo-server-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot used in the HiZollo Official Discord server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HiZollo/HiZollo-Server-Bot.git"
+  },
+  "author": "HiZollo Dev Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HiZollo/HiZollo-Server-Bot/issues"
+  },
+  "homepage": "https://github.com/HiZollo/HiZollo-Server-Bot#readme",
+  "dependencies": {
+    "discord.js": "^14.17.3",
+    "dotenv": "^16.4.7"
+  }
+}
