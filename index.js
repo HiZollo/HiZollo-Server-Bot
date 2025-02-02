@@ -8,12 +8,13 @@ const YELLOW = '\x1b[33m'
 const RESET = '\x1b[0m'
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
   allowedMentions: { parse: ['users'] }
 })
 
 client.commands = new Collection()
 client.autocomplete = new Collection()
+client.music = new Collection()
 client.settings = require('./settings.json')
 
 function loadCommands(manager, dir = './commands') {
