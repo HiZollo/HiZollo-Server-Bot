@@ -8,8 +8,6 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply()
 
-    console.log(repoUrl)
-    
     const infoEmbed = new EmbedBuilder()
       .setAuthor({ name: '我的資訊', iconURL: interaction.client.user.displayAvatarURL() })
       .setColor(0xE4FFF6)
@@ -44,7 +42,7 @@ module.exports = {
         name: '其他資訊',
         value: `邀請我・[原始碼](${repoUrl.slice("git+".length)})・[Chocomint Ice](https://youtu.be/pfkBYHFZAt8)\n\`\`\`yaml\nChocomint Ice 是一家開發薄荷巧克力冰淇淋科技為主的公司，在被 HiZollo 收購後，這些科技被用來建立 HiZollo 資料中心，以及重新打造 chocomint 機器人。\n\`\`\``,
       })
-      .setThumbnail(interaction.client.user.displayAvatarURL({ format: 'png', size: 300 }))
+      .setThumbnail(interaction.client.user.displayAvatarURL({ format: 'png', size: 4096 }))
       .setFooter({ text: `${interaction.user.tag}・使用 /help 來查看所有指令`, iconURL: interaction.user.displayAvatarURL() });
 
     interaction.editReply({ embeds: [infoEmbed] })
