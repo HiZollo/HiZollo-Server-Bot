@@ -1,5 +1,6 @@
 const { EmbedBuilder, MessageFlags } = require('discord.js')
-const { joinVoiceChannel, entersState, createAudioPlayer, createAudioResource, VoiceConnectionStatus, StreamType } = require('@discordjs/voice')
+const GuildMusicManager = require('../music/GuildMusicManager')
+const { joinVoiceChannel, entersState, VoiceConnectionStatus, StreamType } = require('@discordjs/voice')
 
 module.exports = {
   type: 'CHAT_INPUT',
@@ -8,7 +9,7 @@ module.exports = {
   async execute(interaction) {
     const vc = interaction.member.voice.channel
     const res = new EmbedBuilder()
-      .setAuthor({ name: `${interaction.client.settings.name} 通知中心`, iconURL: interaction.client.user.displayAvatarURL() })
+      .setAuthor({ name: `${interaction.client.settings.name} 音樂中心`, iconURL: interaction.client.user.displayAvatarURL() })
       .setColor(0xE4FFF6)
 
     if (!vc) {
@@ -17,8 +18,8 @@ module.exports = {
     }
 
     if (interaction.client.music.has(vc.guild.id)) {
-      const { channel } = interaction.client.music.get(vc.guild.id)
-      if (channel.id === vc.id) {
+      const { voiceChannel } = interaction.client.music.get(vc.guild.id)
+      if (voiceChannel.id === vc.id) {
         res.setDescription('我已經在你的語音頻道中了，你的眼睛還好嗎')
         return interaction.reply({ embeds: [res], flags: MessageFlags.Ephemeral })
       }
@@ -41,14 +42,7 @@ module.exports = {
       selfDeaf: false
     })
 
-    interaction.client.music.set(vc.guild.id, {
-      client: interaction.client,
-      channel: vc,
-      player: createAudioPlayer(),
-      queue: [],
-      isPlaying: false,
-      nowPlaying: {}
-    })
+    interaction.client.music.set(vc.guild.id, new GuildMusicManager(vc, interaction.channel))
 
     const dj = interaction.client.music.get(vc.guild.id)
     connection.subscribe(dj.player)
@@ -60,9 +54,9 @@ module.exports = {
           entersState(connection, VoiceConnectionStatus.Connecting, 1e3)
         ])
 
-        dj.channel = vc.guild.members.me.voice.channel
+        dj.voiceChannel = vc.guild.members.me.voice.channel
       } catch (e) {
-        connection.destroy()
+        dj.leave()
         interaction.client.music.delete(vc.guild.id)
       }
     })

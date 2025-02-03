@@ -7,7 +7,7 @@ module.exports = {
   description: '離開目前語音頻道',
   async execute(interaction) {
     const res = new EmbedBuilder()
-      .setAuthor({ name: `${interaction.client.settings.name} 通知中心`, iconURL: interaction.client.user.displayAvatarURL() })
+      .setAuthor({ name: `${interaction.client.settings.name} 音樂中心`, iconURL: interaction.client.user.displayAvatarURL() })
       .setColor(0xE4FFF6)
 
     if (!interaction.client.music.has(interaction.guild.id)) {
@@ -18,15 +18,13 @@ module.exports = {
     const manager = interaction.client.music.get(interaction.guild.id)
 
     if (!interaction.member.voice.channel ||
-        interaction.member.voice.channel.id !== manager.channel.id) {
+        interaction.member.voice.channel.id !== manager.voiceChannel.id) {
 
       res.setDescription('你必須跟我在同個語音頻道才能使用此指令')
       return interaction.reply({ embeds: [res], flags: MessageFlags.Ephemeral })
     }
 
-    const connection = getVoiceConnection(interaction.guild.id)
-    connection.destroy()
-    interaction.client.music.delete(interaction.guild.id)
+    manager.leave()
     res.setDescription(`已離開 ${interaction.member.voice.channel.name}`)
     interaction.reply({ embeds: [res] })
   }
