@@ -20,7 +20,8 @@ module.exports = {
 
     const dj = interaction.client.music.get(interaction.guild.id)
 
-    const queue = dj.queue.map((track, index) => {
+    const queue = dj.queue.slice()
+    const queueInfo = queue.map((track, index) => {
       return `\`${twoDigits(index + 1)}.\` [${track.metadata.title}](${track.metadata.url})`
     })
 
@@ -31,8 +32,8 @@ module.exports = {
 
     const pages = []
 
-    for (let i = 0; i < queue.length; i += ENTRY_PER_PAGE) {
-      pages.push(queue.slice(i, i + ENTRY_PER_PAGE))
+    for (let i = 0; i < queueInfo.length; i += ENTRY_PER_PAGE) {
+      pages.push(queueInfo.slice(i, i + ENTRY_PER_PAGE))
     }
 
     if (!pages.length) pages.push([])
@@ -71,7 +72,7 @@ module.exports = {
       .setCustomId('PageMenuTrackInfo')
       .setPlaceholder('選擇一個歌曲')
 
-    makeMenuFromPageAndIndex(dj, getInfoSelectMenu, pages, index)
+    makeMenuFromPageAndIndex(queue, getInfoSelectMenu, pages, index)
 
     const menuRow = new ActionRowBuilder()
       .addComponents(getInfoSelectMenu)
@@ -102,7 +103,7 @@ module.exports = {
       idle: 60e3,
     }).on('collect', function(i) {
       if (i.customId === 'PageMenuTrackInfo') {
-        const track = dj.queue[+i.values[0]]
+        const track = queue[+i.values[0]]
         i.followUp({ embeds: [track.getTrackInfoEmbed()], flags: MessageFlags.Ephemeral })
       }
 
@@ -124,7 +125,7 @@ module.exports = {
       pageButtons.next.setDisabled(index == pages.length - 1)
       pageButtons.end.setDisabled(index >= pages.length - 2)
 
-      makeMenuFromPageAndIndex(dj, getInfoSelectMenu, pages, index)
+      makeMenuFromPageAndIndex(queue, getInfoSelectMenu, pages, index)
 
       res.setDescription(`\` >> \` [${nowPlaying.metadata.title}](${nowPlaying.metadata.url})\n\n${pages[index].join('\n')}`)
           .setFooter({ text: `${interaction.user.tag}・第 ${index+1} 頁／共 ${pages.length} 頁`, iconURL: interaction.user.displayAvatarURL() })
@@ -148,12 +149,12 @@ module.exports = {
   }
 }
 
-function makeMenuFromPageAndIndex(dj, menu, pages, index) {
+function makeMenuFromPageAndIndex(queue, menu, pages, index) {
   menu.setOptions()
   for (let i = 0; i < pages[index].length; i++) {
     const actualIndex = index * ENTRY_PER_PAGE + i
     menu.addOptions(new StringSelectMenuOptionBuilder()
-      .setLabel(`${actualIndex + 1}. ${dj.queue[actualIndex].metadata.title}`)
+      .setLabel(`${actualIndex + 1}. ${queue[actualIndex].metadata.title}`)
       .setValue(`${actualIndex}`)
     )
   }
