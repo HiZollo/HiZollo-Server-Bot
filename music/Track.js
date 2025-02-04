@@ -94,6 +94,40 @@ class Track {
     return res
   }
 
+  getTrackInfoEmbed() {
+    const res = new EmbedBuilder()
+      .setAuthor({ name: `${this.client.settings.name} 音樂中心`, iconURL: this.client.user.displayAvatarURL() })
+      .setColor(0xE4FFF6)
+      .setFooter({ text: `由 ${this.requester.user.tag} 指定的歌曲`, iconURL: this.requester.displayAvatarURL() })
+
+    if (this.metadata.thumbnail) res.setThumbnail(this.metadata.thumbnail)
+
+    let description = `正在播放：[${this.metadata.title}](${this.metadata.url})`
+
+    if (this.metadata.lengthSeconds) {
+      description += `\n\n樂曲時長：${timeResolve(this.metadata.lengthSeconds)}`
+    }
+
+    if (this.metadata.author) {
+      if (this.metadata.author.url) description += `\n\n上傳作者：[${this.metadata.author.name}](${this.metadata.author.url})`
+      else description += `\n\n上傳作者：${this.metadata.author.name}`
+    }
+
+    if (this.metadata.uploadDate) {
+      description += `\n\n上傳日期：${dateToReadableString(this.metadata.uploadDate)}`
+    }
+
+    if (this.metadata.viewCount) {
+      description += `\n\n觀看次數：${this.metadata.viewCount.toString().replace(/(.)(?=(\d{3})+$)/g,'$1,')}`
+    }
+
+    description += `\n\u200b`
+
+    res.setDescription(description)
+
+    return res
+  }
+
 }
 
 function dateToReadableString(date) {
