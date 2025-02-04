@@ -11,7 +11,7 @@ const YoutubeAdapter = {
     return this.isVideoURL(url) && listRegex.test(url)
   },
 
-  useMe(query) {
+  supports(query) {
     return this.isVideoURL(query)
   },
 
@@ -85,26 +85,3 @@ const YoutubeAdapter = {
 }
 
 module.exports = YoutubeAdapter
-
-/**
- * interface Adapter {
- *   useMe(query: string): boolean
- *   isList(query: string): boolean
- *   getTrackInfo(query: string): Promise<{ inputURL: string, metadata: TrackMetadata }>
- *   getBulkTrackInfo(query: string): Promise<{ inputURL: string, metadata: TrackMetadata }[]>
- *   getResourceURL(url: string): Promise<string>
- * }
- *
- * interface TrackMetadata {
- *   title: string
- *   url: string
- *   thumbnail?: string
- *   lengthSeconds?: number
- *   viewCount?: number
- *   uploadDate?: Date
- *   author?: {
- *     name: string
- *     url?: string
- *   }
- * }
- */

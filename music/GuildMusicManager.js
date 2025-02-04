@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js')
 const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice')
 const Track = require('./Track')
 const GuildMusicController = require('./GuildMusicController')
-const YoutubeAdapter = require('./YoutubeAdapter')
+const YoutubeAdapter = require('./adapters/YoutubeAdapter.js')
 
 const adapters = [YoutubeAdapter]
 
@@ -21,7 +21,7 @@ class GuildMusicManager {
   }
 
   chooseAdapter(query) {
-    return adapters.find(adapter => adapter.useMe(query))
+    return adapters.find(adapter => adapter.supports(query))
   }
 
   play(interaction, query) {
