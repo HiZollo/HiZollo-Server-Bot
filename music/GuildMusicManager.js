@@ -93,8 +93,13 @@ class GuildMusicManager {
 
   async playTrack(track) {
     try {
-      const stream = await track.getStream()
-      this.player.play(stream)
+      this.paused = false
+      this.isPlaying = true
+      this.nowPlaying = track
+      await Promise.all([
+        track.getStream().then(stream => this.player.play(stream)),
+        this.controller.resend()
+      ])
     } catch (e) {
       console.error(e)
       this.textChannel.send({
@@ -107,12 +112,6 @@ class GuildMusicManager {
       this.playNext()
       return
     }
-
-    this.paused = false
-    this.isPlaying = true
-    this.nowPlaying = track
-
-    this.controller.resend()
 
     this.player.once(AudioPlayerStatus.Idle, () => {
       if (this.nowPlaying && this.nowPlaying.loopState !== 0) {
