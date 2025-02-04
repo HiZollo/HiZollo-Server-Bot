@@ -18,6 +18,7 @@ class GuildMusicManager {
     this.controller = new GuildMusicController(this.client, this.textChannel, this)
     this.nowPlaying = null
     this.paused = false
+    this.maxQueueSize = 99
   }
 
   chooseAdapter(query) {
@@ -25,6 +26,13 @@ class GuildMusicManager {
   }
 
   play(interaction, query) {
+    if (this.queue.length >= this.maxQueueSize) {
+      interaction.editReply(`隊列已超過上限 ${this.maxQueueSize} 首，請等待目前的歌曲播放完畢，或是移除一些歌曲後再試`).then(msg => {
+        setTimeout(() => msg.delete(), 5000)
+      })
+      return
+    }
+
     const adapter = this.chooseAdapter(query)
     if (!adapter) throw new Error('No suitable adapter found')
 
