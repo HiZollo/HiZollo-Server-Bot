@@ -18,12 +18,17 @@ module.exports = {
       .setColor(0xE4FFF6)
 
     if (!name) {
+      const maxCommandNameLength = interaction.client.commands
+        .filter(command => command.type === 'CHAT_INPUT')
+        .map(command => command.name.length)
+        .reduce((a, b) => Math.max(a, b), 0)
+
       const list = interaction.client.commands
         .filter(command => {
           return command.type === 'CHAT_INPUT'
         })
         .map(command => {
-          return `\`/${format(command.name, 10)}\`：${command.description}`
+          return `\`/${format(command.name, maxCommandNameLength)}\`：${command.description}`
         })
 
       res.setDescription(list.join('\n'))
