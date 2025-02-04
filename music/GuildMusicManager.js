@@ -57,7 +57,7 @@ class GuildMusicManager {
   }
 
   async playlistWithAdapter(interaction, query, adapter) {
-    interaction.editReply('解析播放清單中，若播放清單過長，此動作可能會花上幾分鐘，請耐心等候......')
+    interaction.editReply('解析播放清單中，若播放清單過長，可能會花上幾分鐘，請耐心等候......')
 
     try {
       const data = await adapter.getBulkTrackInfo(query)
