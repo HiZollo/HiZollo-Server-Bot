@@ -8,7 +8,7 @@ Music Adapter 是一個符合 `Adapter` 介面的物件，用於在 `GuildMusicM
 interface Adapter {
     /**
      * 檢查該 Adapter 是否能處理給定的 URL。
-     * 在 `GuildMusicManager` 中，`supports` 用於逐一檢查每個 URL，並選擇第一個能處理的 Adapter。
+     * 在 `GuildMusicManager` 中，`supports` 用於逐一檢查是否能處理給定 URL，並選擇第一個能處理的 Adapter。
      * @param url 音樂來源的 URL。
      * @returns 如果該 Adapter 能夠處理此 URL，則返回 true，否則返回 false。
      */
@@ -75,7 +75,7 @@ interface TrackInfo {
     url: string;
 
     /**
-     * 音軌的縮略圖 URL（可選）。
+     * 音軌的縮圖 URL（可選）。
      */
     thumbnail?: string;
 
