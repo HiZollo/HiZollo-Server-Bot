@@ -38,8 +38,8 @@ class GuildMusicController {
 
     this.collector.on('collect', async interaction => {
       await interaction.deferUpdate()
-      const nowPlaying = this.manager.nowPlaying
-      if (!nowPlaying) return
+      if (!this.manager.nowPlaying) return
+      if (this.manager.player.state.status === AudioPlayerStatus.Idle) return
 
       switch (interaction.customId) {
         case 'MusicControlButtonPause':
@@ -49,19 +49,15 @@ class GuildMusicController {
           this.manager.resume()
           break
         case 'MusicControlButtonLoopNormal':
-          nowPlaying.loopState = 1
-          break
         case 'MusicControlButtonLoopAgain':
-          nowPlaying.loopState = 2
-          break
         case 'MusicControlButtonLoopLoop':
-          nowPlaying.loopState = 0
+          this.manager.toggleLoopState()
           break
         case 'MusicControlButtonSkip':
           this.manager.skip()
           return
         case 'MusicControlButtonDataNowPlaying':
-          await interaction.followUp({ embeds: [nowPlaying.getNowPlayingEmbed()], flags: MessageFlags.Ephemeral })
+          await interaction.followUp({ embeds: [this.manager.nowPlaying.getNowPlayingEmbed()], flags: MessageFlags.Ephemeral })
           break
       }
 

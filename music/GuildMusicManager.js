@@ -158,6 +158,21 @@ class GuildMusicManager {
     this.player.stop(true)
   }
 
+  toggleLoopState() {
+    if (!this.nowPlaying) return
+    switch (this.nowPlaying.loopState) {
+      case 0:
+        this.nowPlaying.loopState = 1
+        break
+      case 1:
+        this.nowPlaying.loopState = 2
+        break
+      case 2:
+        this.nowPlaying.loopState = 0
+        break
+    }
+  }
+
   leave() {
     const connection = getVoiceConnection(this.guild.id)
     this.player.removeAllListeners()
