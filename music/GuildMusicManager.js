@@ -87,6 +87,15 @@ class GuildMusicManager {
     try {
       const data = await adapter.getBulkTrackInfo(query)
       
+      const res = new EmbedBuilder()
+        .setAuthor({ name: `${this.client.settings.name} 音樂中心`, iconURL: this.client.user.displayAvatarURL() })
+        .setColor(0xE4FFF6)
+
+      if (!data.length) {
+        res.setDescription('很遺憾，這個播放清單中沒有我可以播放的樂曲')
+        return message.edit({ content: '', embeds: [res] }).catch(console.error)
+      }
+      
       await message.edit('播放清單解析完成，正在加入隊列中......').catch(console.error)
 
       const tracks = data.map(({ inputURL, metadata }) => new Track(this.client, inputURL, metadata, interaction.member, adapter))
@@ -94,9 +103,7 @@ class GuildMusicManager {
 
       this.queue = this.queue.concat(tracks)
 
-      const res = new EmbedBuilder()
-        .setAuthor({ name: `${this.client.settings.name} 音樂中心`, iconURL: this.client.user.displayAvatarURL() })
-        .setColor(0xE4FFF6)
+
         .setDescription(`已將播放清單的 ${tracks.length} 首歌加入隊列`)
 
       if (thumbnail) res.setThumbnail(thumbnail)
