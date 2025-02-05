@@ -44,7 +44,7 @@ class GuildMusicManager {
     if (!this.canAutoUnsuppress(interaction)) return
 
     if (this.queue.length >= this.maxQueueSize) {
-      interaction.editReply(`隊列已超過上限 ${this.maxQueueSize} 首，請等待目前的歌曲播放完畢，或是移除一些歌曲後再試`).then(msg => {
+      interaction.followUp(`隊列已超過上限 ${this.maxQueueSize} 首，請等待目前的歌曲播放完畢，或是移除一些歌曲後再試`).then(msg => {
         setTimeout(() => msg.delete(), 5000)
       })
       return
@@ -66,10 +66,10 @@ class GuildMusicManager {
       const track = new Track(this.client, inputURL, metadata, interaction.member, adapter)
       this.queue.push(track)
 
-      await interaction.editReply({ embeds: [track.getQueuedEmbed()] })
+      await interaction.followUp({ embeds: [track.getQueuedEmbed()] })
     } catch (e) {
       console.error(e)
-      return interaction.editReply('目前無法正確播放這首歌曲')
+      return interaction.followUp('目前無法正確播放這首歌曲')
     }
 
     if (!this.isPlaying) {
@@ -82,12 +82,12 @@ class GuildMusicManager {
   }
 
   async playlistWithAdapter(interaction, query, adapter) {
-    interaction.editReply('解析播放清單中，若播放清單過長，可能會花上幾分鐘，請耐心等候......')
+    const message = await interaction.followUp('解析播放清單中，若播放清單過長，可能會花上幾分鐘，請耐心等候......')
 
     try {
       const data = await adapter.getBulkTrackInfo(query)
       
-      await interaction.editReply('播放清單解析完成，正在加入隊列中......')
+      await message.edit('播放清單解析完成，正在加入隊列中......').catch(console.error)
 
       const tracks = data.map(({ inputURL, metadata }) => new Track(this.client, inputURL, metadata, interaction.member, adapter))
       const thumbnail = data.find(track => track.metadata.thumbnail)?.metadata?.thumbnail
@@ -101,10 +101,10 @@ class GuildMusicManager {
 
       if (thumbnail) res.setThumbnail(thumbnail)
 
-      await interaction.editReply({ content: '', embeds: [res] })
+      await message.edit({ content: '', embeds: [res] }).catch(console.error)
     } catch (e) {
       console.error(e)
-      return interaction.editReply('出現未知錯誤，已停止')
+      return message.edit('出現未知錯誤，已停止').catch(console.error)
     }
 
     if (!this.isPlaying) {
@@ -148,6 +148,11 @@ class GuildMusicManager {
       this.playNext()
     })
   }
+
+  searchWithAdapter(query, adapter) {
+    return adapter.search(query, 10)
+  }
+    
 
   playNext() {
     if (!this.queue.length) {

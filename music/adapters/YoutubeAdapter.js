@@ -35,6 +35,29 @@ const YoutubeAdapter = {
       })
   },
 
+  search(query, limit = 10) {
+    return this._search(query, limit)
+      .then((results) => {
+        return results.map(result => ({ url: result.url, title: result.title }));
+      })
+  },
+
+  async _search(query, limit) {
+    return new Promise((resolve, reject) => {
+      exec(`yt-dlp "ytsearch${limit}:${query}" --dump-json --flat-playlist --skip-download`, (err, stdout, stderr) => {
+        if (err) return reject(err)
+
+        try {
+          const results = stdout.split('\n').filter(line => line.trim()).map(line => JSON.parse(line))
+
+          resolve(results)
+        } catch (e) {
+          reject(e)
+        }
+      })
+    })
+  },
+
   getResourceURL(url) {
     return new Promise((resolve, reject) => {
       exec(`yt-dlp -i -x --get-url --geo-bypass ${url}`, (err, stdout, stderr) => {
