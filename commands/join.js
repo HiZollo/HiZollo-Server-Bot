@@ -1,4 +1,4 @@
-const { EmbedBuilder, MessageFlags } = require('discord.js')
+const { ChannelType, EmbedBuilder, MessageFlags, PermissionsBitField } = require('discord.js')
 const GuildMusicManager = require('../music/GuildMusicManager')
 const { joinVoiceChannel, entersState, VoiceConnectionStatus, StreamType } = require('@discordjs/voice')
 
@@ -42,10 +42,25 @@ module.exports = {
       selfDeaf: false
     })
 
-    interaction.client.music.set(vc.guild.id, new GuildMusicManager(vc, interaction.channel))
+    interaction.client.music.set(vc.guild.id, new GuildMusicManager({
+      voiceChannel: vc,
+      textChannel: interaction.channel,
+      stageAutoUnsuppress: vc.type === ChannelType.GuildStageVoice && interaction.guild.members.me.permissions.has(PermissionsBitField.StageModerator)
+    }))
 
     const dj = interaction.client.music.get(vc.guild.id)
     connection.subscribe(dj.player)
+
+    try {
+      await entersState(connection, VoiceConnectionStatus.Connecting, 5e3).then(() => {
+        if (dj.stageAutoUnsuppress) interaction.guild.members.me.voice.setSuppressed(false)
+      })
+    } catch(e) {
+      console.log(e)
+      dj.leave();
+      res.setDescription('無預警加入失敗，請稍後再試')
+      return interaction.editReply({ embeds: [res] })
+    }
 
     connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
       try {

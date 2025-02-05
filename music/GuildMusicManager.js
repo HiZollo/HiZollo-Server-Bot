@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js')
+const { ChannelType, EmbedBuilder, PermissionsBitField } = require('discord.js')
 const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice')
 const Track = require('./Track')
 const GuildMusicController = require('./GuildMusicController')
@@ -7,11 +7,12 @@ const YoutubeAdapter = require('./adapters/YoutubeAdapter.js')
 const adapters = [YoutubeAdapter]
 
 class GuildMusicManager {
-  constructor(vc, tc) {
-    this.client = vc.client
-    this.guild = vc.guild
-    this.voiceChannel = vc
-    this.textChannel = tc
+  constructor({ voiceChannel, textChannel, stageAutoUnsuppress }) {
+    this.client = voiceChannel.client
+    this.guild = voiceChannel.guild
+    this.voiceChannel = voiceChannel
+    this.textChannel = textChannel
+    this.stageAutoUnsuppress = stageAutoUnsuppress
     this.player = createAudioPlayer()
     this.queue = []
     this.isPlaying = false
@@ -25,7 +26,23 @@ class GuildMusicManager {
     return adapters.find(adapter => adapter.supports(query))
   }
 
+  canAutoUnsuppress(interaction) {
+    if (this.voiceChannel.type === ChannelType.GuildStageVoice && this.guild.members.me.voice.suppress) {
+      if (!this.guild.members.me.permissions.has(PermissionsBitField.StageModerator)) {
+        interaction.editReply('我沒有辦法在這舞台頻道上發言！請你給我發言權或是讓我成為舞台版主').then(msg => {
+          setTimeout(() => msg.delete(), 5000)
+        })
+        return false
+      }
+      this.guild.members.me.voice.setSuppressed(false)
+      return true
+    }
+    return true
+  }
+
   play(interaction, query) {
+    if (!this.canAutoUnsuppress(interaction)) return
+
     if (this.queue.length >= this.maxQueueSize) {
       interaction.editReply(`隊列已超過上限 ${this.maxQueueSize} 首，請等待目前的歌曲播放完畢，或是移除一些歌曲後再試`).then(msg => {
         setTimeout(() => msg.delete(), 5000)
@@ -144,6 +161,9 @@ class GuildMusicManager {
           .setColor(0xE4FFF6)
         ]
       })
+      if (this.voiceChannel.type === ChannelType.GuildStageVoice && !this.stageAutoUnsuppress) {
+        this.guild.members.me.voice.setSuppressed(true)
+      }
       return
     }
 
