@@ -12,7 +12,7 @@ class GuildMusicController {
 
   async resend() {
     if (this.message) {
-      await this.message.delete()
+      await this.message.delete().catch(() => {})
     }
 
     if (this.collector) {
@@ -70,7 +70,7 @@ class GuildMusicController {
 
   clear() {
     if (this.message) {
-      this.message.delete()
+      this.message.delete().catch(() => {})
       this.message = null
     }
 
