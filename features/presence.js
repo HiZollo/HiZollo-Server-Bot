@@ -20,9 +20,11 @@ function randomUpper(text) {
 
 module.exports = client => {
   const presence = infArray(presenceArray)
-  client.user.setActivity(randomUpper('chocomint ice'), presence.next().value)
-  setInterval(() => {
-    client.user.setActivity(randomUpper('chocomint ice'), presence.next().value)
-  }, 15e3)
-}
 
+  function startSetPresence() {
+    client.user.setActivity(randomUpper('chocomint ice'), presence.next().value)
+    setTimeout(startSetPresence, 15e3)
+  }
+
+  startSetPresence()
+}
