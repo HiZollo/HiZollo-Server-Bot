@@ -8,7 +8,7 @@ module.exports = {
   async execute(interaction) {
     await interaction.deferReply()
 
-    const url = repoUrl.slice("git+".length)
+    const url = repoUrl.slice("git+".length, -".git".length)
 
     const infoEmbed = new EmbedBuilder()
       .setAuthor({ name: '我的資訊', iconURL: interaction.client.user.displayAvatarURL() })
@@ -42,7 +42,7 @@ module.exports = {
         value: 'Chocomint Dev Team\nHiZollo Dev Team',
       }, {
         name: '其他資訊',
-        value: `[小故事](${`${url}/README.md`})・[原始碼](${url})・[Chocomint Ice](https://youtu.be/pfkBYHFZAt8)\n`
+        value: `[小故事](${`${url}?tab=readme-ov-file#介紹`})・[原始碼](${url})・[Chocomint Ice](https://youtu.be/pfkBYHFZAt8)\n`
       })
       .setThumbnail(interaction.client.user.displayAvatarURL({ format: 'png', size: 4096 }))
       .setFooter({ text: `${interaction.user.tag}・使用 /help 來查看所有指令`, iconURL: interaction.user.displayAvatarURL() });
