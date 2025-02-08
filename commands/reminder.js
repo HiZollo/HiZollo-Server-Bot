@@ -40,7 +40,7 @@ module.exports = {
     const reminderTextOrAction = reminders[reminder]
 
     if (typeof reminderTextOrAction === 'function') {
-      reminderAction(interaction)
+      reminderTextOrAction(interaction)
       return
     }
 
