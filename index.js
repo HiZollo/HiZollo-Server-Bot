@@ -8,7 +8,12 @@ const YELLOW = '\x1b[33m'
 const RESET = '\x1b[0m'
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.MessageContent
+  ],
   allowedMentions: { parse: ['users'] }
 })
 
@@ -16,6 +21,7 @@ client.commands = new Collection()
 client.autocomplete = new Collection()
 client.music = new Collection()
 client.settings = require('./settings.json')
+client.timeweaver = {}
 
 function loadCommands(manager, dir = './commands') {
   const commandFiles = readdirSync(dir).filter(file => file.endsWith('.js'))
@@ -38,6 +44,7 @@ for (const file of autocompleteFiles) {
 client.on('ready', () => {
   console.log(`${GREEN}[PROCESS]${RESET} Bot 已上線`)
   require('./features/presence.js')(client)
+  require('./features/timeweaver.js')(client, '572733182412193792')
 })
 
 client.on('interactionCreate', interaction => {
