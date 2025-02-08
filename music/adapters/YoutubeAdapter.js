@@ -2,7 +2,7 @@ const { exec } = require('child_process')
 
 const YoutubeAdapter = {
   isVideoURL(url) {
-    const urlRegex = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/
+    const urlRegex = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/gi
     return urlRegex.test(url)
   },
 
