@@ -1,10 +1,11 @@
 const { ChannelType, EmbedBuilder, PermissionsBitField } = require('discord.js')
-const { createAudioPlayer, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice')
+const { createAudioPlayer, entersState, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice')
 const Track = require('./Track')
 const GuildMusicController = require('./GuildMusicController')
+const RawfileAdapter = require('./adapters/RawfileAdapter.js')
 const YoutubeAdapter = require('./adapters/YoutubeAdapter.js')
 
-const adapters = [YoutubeAdapter]
+const adapters = [YoutubeAdapter, RawfileAdapter]
 
 class GuildMusicManager {
   constructor({ voiceChannel, textChannel, stageAutoUnsuppress }) {
@@ -132,6 +133,12 @@ class GuildMusicManager {
         track.getStream().then(stream => this.player.play(stream)),
         this.controller.resend()
       ])
+
+      entersState(this.player, AudioPlayerStatus.Playing, 5e3)
+        .catch(e => {
+          this.player.emit(AudioPlayerStatus.Idle)
+        })
+     
     } catch (e) {
       console.error(e)
       this.textChannel.send({

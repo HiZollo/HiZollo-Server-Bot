@@ -45,6 +45,7 @@ class Track {
       .setDescription(`正在播放 [${this.metadata.title}](${this.metadata.url})`)
       .setFooter({ text: `由 ${this.requester.user.tag} 指定的歌曲`, iconURL: this.requester.displayAvatarURL() })
 
+    if (this.metadata.title === this.metadata.url) res.setDescription(`正在播放 [未知音樂](${this.metadata.url})`)
     if (this.metadata.thumbnail) res.setThumbnail(this.metadata.thumbnail)
     return res
   }
@@ -56,6 +57,7 @@ class Track {
       .setDescription(`已將 [${this.metadata.title}](${this.metadata.url}) 加入隊列`)
       .setFooter({ text: `由 ${this.requester.user.tag} 指定的歌曲`, iconURL: this.requester.displayAvatarURL() })
 
+    if (this.metadata.title === this.metadata.url) res.setDescription(`已將 [未知音樂](${this.metadata.url}) 加入隊列`)
     if (this.metadata.thumbnail) res.setThumbnail(this.metadata.thumbnail)
     return res
   }
@@ -69,6 +71,8 @@ class Track {
     if (this.metadata.thumbnail) res.setThumbnail(this.metadata.thumbnail)
 
     let description = `正在播放：[${this.metadata.title}](${this.metadata.url})`
+
+    if (this.metadata.title === this.metadata.url) description = `正在播放：[未知音樂](${this.metadata.url})`
 
     if (this.metadata.lengthSeconds) {
       description += `\n\n播放時間：${timeResolve(~~(this.playedMs / 1000))} / ${timeResolve(this.metadata.lengthSeconds)}`
@@ -102,7 +106,10 @@ class Track {
 
     if (this.metadata.thumbnail) res.setThumbnail(this.metadata.thumbnail)
 
+
     let description = `正在播放：[${this.metadata.title}](${this.metadata.url})`
+
+    if (this.metadata.title === this.metadata.url) description = `正在播放：[未知音樂](${this.metadata.url})`
 
     if (this.metadata.lengthSeconds) {
       description += `\n\n樂曲時長：${timeResolve(this.metadata.lengthSeconds)}`
