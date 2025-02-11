@@ -87,7 +87,7 @@ class GuildMusicManager {
 
     try {
       const data = await adapter.getBulkTrackInfo(query)
-      
+
       const res = new EmbedBuilder()
         .setAuthor({ name: `${this.client.settings.name} 音樂中心`, iconURL: this.client.user.displayAvatarURL() })
         .setColor(0xE4FFF6)
@@ -104,8 +104,7 @@ class GuildMusicManager {
 
       this.queue = this.queue.concat(tracks)
 
-
-        .setDescription(`已將播放清單的 ${tracks.length} 首歌加入隊列`)
+      res.setDescription(`已將播放清單的 ${tracks.length} 首歌加入隊列`)
 
       if (thumbnail) res.setThumbnail(thumbnail)
 
