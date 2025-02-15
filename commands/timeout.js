@@ -95,30 +95,30 @@ module.exports = {
 }
 
 function secToString(seconds) {
-    const days = Math.floor(seconds / (3600 * 24));
-    seconds -= days * 3600 * 24;
+    const days = Math.floor(seconds / (3600 * 24))
+    seconds -= days * 3600 * 24
 
-    const hours = Math.floor(seconds / 3600);
-    seconds -= hours * 3600;
+    const hours = Math.floor(seconds / 3600)
+    seconds -= hours * 3600
 
-    const minutes = Math.floor(seconds / 60);
-    seconds -= minutes * 60;
+    const minutes = Math.floor(seconds / 60)
+    seconds -= minutes * 60
 
-    const remainingSeconds = seconds;
+    const remainingSeconds = seconds
 
-    let result = '';
-    if (days > 0) result += `${days} 天 `;
-    if (hours > 0 || days > 0) result += `${hours} 時 `;
-    if (minutes > 0 || hours > 0 || days > 0) result += `${minutes} 分 `;
-    result += `${remainingSeconds} 秒`;
+    let result = ''
+    if (days > 0) result += `${days} 天 `
+    if (hours > 0 || days > 0) result += `${hours} 時 `
+    if (minutes > 0 || hours > 0 || days > 0) result += `${minutes} 分 `
+    result += `${remainingSeconds} 秒`
 
-    return result;
+    return result
 }
 
 function resolveTime(formatTime) {
-  const timeUnits = [1, 60, 60 * 60, 24 * 60 * 60]; // ms, seconds, minutes, hours, days
-  const time = formatTime.split('-').map(Number).reverse();
+  const timeUnits = [1, 60, 60 * 60, 24 * 60 * 60] // ms, seconds, minutes, hours, days
+  const time = formatTime.split('-').map(Number).reverse()
 
-  return time.reduce((total, current, index) => total + current * timeUnits[index], 0);
+  return time.reduce((total, current, index) => total + current * timeUnits[index], 0)
 }
 
