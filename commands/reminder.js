@@ -15,8 +15,8 @@ const reminders = {
   'spoonfeed': '有些問題可以先試著透過 Google 查找答案，這樣能更快速解決一些常見的問題。如果仍然無法解決，可以提出具體遇到的困難，社區成員大都很樂意提供協助',
   'notdeleted': '當你發現 HiZollo 沒有把訊息刪乾淨時，其實那只是 Discord 的顯示問題，重新整理之後你就會發現訊息被刪掉了',
   'timeweaver': '以 UTC+8 為準，在每天 00:00:00 - 00:09:59 這段時間內於 <#572733182412193794> 或 <#774937521275666432> 中第一個講出「跨日大師」的人，將會獲得跨日大師身份並載入史冊。此身份每日重置。',
-  'python': (interaction) => { 
-    interaction.editReply('Python 在這裡是禁語，不能討論的，他是絕對的邪教。在這裡討論有關 Python 的事情都有可能遭受極大的懲罰').then(msg => {
+  'python': (interaction, user) => { 
+    interaction.editReply(compoundReminder('Python 在這裡是禁語，不能討論的，他是絕對的邪教。在這裡討論有關 Python 的事情都有可能遭受極大的懲罰', user)).then(msg => {
       setTimeout(() => { msg.edit(msg.content.replace(/Python/g, '[敏感字詞已和諧]')) }, 1984)
     })
   }
@@ -32,18 +32,29 @@ module.exports = {
     description: '要提醒的內容',
     required: true,
     choices: Object.keys(reminders).map(key => ({ name: key, value: key }))
+  }, {
+    name: '使用者',
+    type: 'USER',
+    description: '要提醒的使用者',
   }],
   async execute(interaction) {
     await interaction.deferReply()
 
     const reminder = interaction.options.getString('提醒項目')
+    const user = interaction.options.getUser('使用者')
+
     const reminderTextOrAction = reminders[reminder]
 
     if (typeof reminderTextOrAction === 'function') {
-      reminderTextOrAction(interaction)
+      reminderTextOrAction(interaction, user)
       return
     }
 
-    await interaction.editReply(reminderTextOrAction)
+    await interaction.editReply(compoundReminder(reminderTextOrAction, user))
   }
+}
+
+function compoundReminder(text, user) {
+  if (!user) return text
+  return `${text}\n-# \u200b\n-# 給 ${user} 的薄荷巧克力罐頭`
 }
