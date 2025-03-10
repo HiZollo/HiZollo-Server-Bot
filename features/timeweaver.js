@@ -4,8 +4,8 @@ const { Cron } = require('croner')
 const DATA_PATH = './timeweaver.txt'
 const TIME_WEAVER_ROLE_ID = '1262408334691274923'
 const TIME_WEAVER_CHANNEL_IDS = {
-  '572733182412193794': false,
-  '774937521275666432': false
+  '572733182412193794': true,
+  '774937521275666432': true
 }
 
 module.exports = (client, guildId) => {
@@ -26,19 +26,18 @@ module.exports = (client, guildId) => {
 
   client.on('messageCreate', async message => {
     if (!Object.keys(TIME_WEAVER_CHANNEL_IDS).includes(message.channel.id)) return
-    if (client.timeweaver.data.includes(message.author.id)) return
+    if (TIME_WEAVER_CHANNEL_IDS[message.channel.id]) return
     if (message.author.bot) return
     if (message.createdAt.getUTCHours() !== 16) return
     if (message.createdAt.getUTCMinutes() < 0 || message.createdAt.getUTCMinutes() > 9) return
     if (message.content !== '跨日大師') return
 
-    if (TIME_WEAVER_CHANNEL_IDS[message.channel.id]) {
-      await message.member.roles.add(TIME_WEAVER_ROLE_ID)
-      client.timeweaver.data.push(message.author.id)
-      writeTimeWeaverData(client)
-    }
-
     TIME_WEAVER_CHANNEL_IDS[message.channel.id] = true
+    if (client.timeweaver.data.includes(message.author.id)) return
+
+    await message.member.roles.add(TIME_WEAVER_ROLE_ID)
+    client.timeweaver.data.push(message.author.id)
+    writeTimeWeaverData(client)
   })
 
 }
@@ -50,6 +49,8 @@ function readTimeWeaverData(client) {
   } catch(err) {
     client.timeweaver.data = []
   }
+
+  if (!client.timeweaver.data.length) Object.keys(TIME_WEAVER_CHANNEL_IDS).forEach(key => TIME_WEAVER_CHANNEL_IDS[key] = false)
 }
 
 function writeTimeWeaverData(client) {
