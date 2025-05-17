@@ -27,8 +27,8 @@ class GuildMusicController {
     this.collector = this.message.createMessageComponentCollector({
       componentType: ComponentType.Button,
       filter: async interaction => {
-        if (!interaction.customId.startsWith('MusicControlButton')) return false;
-        if (interaction.member.voice.channelId !== this.manager.voiceChannel.id && !interaction.customId.startsWith('MusicControlButtonData')) {
+        if (!interaction.customId.startsWith('MusicButton')) return false;
+        if (interaction.member.voice.channelId !== this.manager.voiceChannel.id && interaction.customId.startsWith('MusicButtonControl')) {
           await interaction.reply({ content: '你必須跟我在同個語音頻道才能使用此按鈕', flags: MessageFlags.Ephemeral })
           return false
         }
@@ -41,29 +41,36 @@ class GuildMusicController {
       if (!this.manager.nowPlaying) return
       if (this.manager.player.state.status === AudioPlayerStatus.Idle) return
 
-      switch (interaction.customId) {
-        case 'MusicControlButtonPause':
-          this.manager.pause()
-          break
-        case 'MusicControlButtonResume':
-          this.manager.resume()
-          break
-        case 'MusicControlButtonLoopNormal':
-        case 'MusicControlButtonLoopAgain':
-        case 'MusicControlButtonLoopLoop':
-          this.manager.toggleLoopState()
-          break
-        case 'MusicControlButtonSkip':
-          this.manager.skip()
-          return
-        case 'MusicControlButtonDataNowPlaying':
-          await interaction.followUp({ embeds: [this.manager.nowPlaying.getNowPlayingEmbed()], flags: MessageFlags.Ephemeral })
-          break
-      }
+      if (interaction.customId.startsWith('MusicButtonControl')) {
+        switch (interaction.customId) {
+          case 'MusicButtonControlPause':
+            this.manager.pause()
+            break
+          case 'MusicButtonControlResume':
+            this.manager.resume()
+            break
+          case 'MusicButtonControlLoopNormal':
+          case 'MusicButtonControlLoopAgain':
+          case 'MusicButtonControlLoopLoop':
+            this.manager.toggleLoopState()
+            break
+          case 'MusicButtonControlSkip':
+            this.manager.skip()
+            return
+          default: return
+        }
 
-      await interaction.editReply({
-        components: this.getNewButtons()
-      })
+        await interaction.editReply({
+          components: this.getNewButtons()
+        })
+
+      } else if (interaction.customId.startsWith('MusicButtonData')) {
+        switch (interaction.customId) {
+          case 'MusicButtonDataNowPlaying':
+            await interaction.followUp({ embeds: [this.manager.nowPlaying.getNowPlayingEmbed()], flags: MessageFlags.Ephemeral })
+            break
+        }
+      }
     })
 
   }
@@ -84,53 +91,53 @@ class GuildMusicController {
     return [
       new ActionRowBuilder()
         .addComponents(
-          MusicControlButtons.musicRow.pause.setDisabled(this.manager.paused),
-          MusicControlButtons.musicRow.resume.setDisabled(!this.manager.paused),
-          MusicControlButtons.musicRow.loop[this.manager.nowPlaying.loopState],
-          MusicControlButtons.musicRow.skip
+          MusicButtons.musicRow.pause.setDisabled(this.manager.paused),
+          MusicButtons.musicRow.resume.setDisabled(!this.manager.paused),
+          MusicButtons.musicRow.loop[this.manager.nowPlaying.loopState],
+          MusicButtons.musicRow.skip
         ),
       new ActionRowBuilder()
         .addComponents(
-          MusicControlButtons.dataRow.nowPlaying
+          MusicButtons.dataRow.nowPlaying
         ),
     ]
   }
 
 }
 
-const MusicControlButtons = {
+const MusicButtons = {
   musicRow: {
     pause: new ButtonBuilder()
-      .setCustomId('MusicControlButtonPause')
+      .setCustomId('MusicButtonControlPause')
       .setLabel('暫停')
       .setStyle(ButtonStyle.Primary),
     resume: new ButtonBuilder()
-      .setCustomId('MusicControlButtonResume')
+      .setCustomId('MusicButtonControlResume')
       .setLabel('繼續')
       .setStyle(ButtonStyle.Primary)
       .setDisabled(true),
     loop: [
        new ButtonBuilder()
-        .setCustomId('MusicControlButtonLoopNormal')
+        .setCustomId('MusicButtonControlLoopNormal')
         .setLabel('正常播放')
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
-        .setCustomId('MusicControlButtonLoopAgain')
+        .setCustomId('MusicButtonControlLoopAgain')
         .setLabel('重播一次')
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
-        .setCustomId('MusicControlButtonLoopLoop')
+        .setCustomId('MusicButtonControlLoopLoop')
         .setLabel('循環播放')
         .setStyle(ButtonStyle.Secondary)
     ],
     skip: new ButtonBuilder()
-      .setCustomId('MusicControlButtonSkip')
+      .setCustomId('MusicButtonControlSkip')
       .setLabel('跳過')
       .setStyle(ButtonStyle.Danger)
   },
   dataRow: {
     nowPlaying: new ButtonBuilder()
-      .setCustomId('MusicControlButtonDataNowPlaying')
+      .setCustomId('MusicButtonDataNowPlaying')
       .setLabel('詳細資訊')
       .setStyle(ButtonStyle.Success)
   }
