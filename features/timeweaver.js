@@ -35,8 +35,8 @@ module.exports = (client, guildId) => {
     TIME_WEAVER_CHANNEL_IDS[message.channel.id] = true
     if (client.timeweaver.data.includes(message.author.id)) return
 
-    await message.member.roles.add(TIME_WEAVER_ROLE_ID)
     client.timeweaver.data.push(message.author.id)
+    await message.member.roles.add(TIME_WEAVER_ROLE_ID)
     writeTimeWeaverData(client)
   })
 
