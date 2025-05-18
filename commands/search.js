@@ -70,7 +70,7 @@ module.exports = {
       .setCustomId('MusicSearchSelectMenu')
       .setPlaceholder('選擇一個歌曲')
       .addOptions(results.map((result, index) => new StringSelectMenuOptionBuilder()
-        .setLabel(`${index + 1}. ${result.title}`)
+        .setLabel(`${index + 1}`)
         .setValue(index.toString())
       ))
 
@@ -132,3 +132,4 @@ module.exports = {
 
   }
 }
+
