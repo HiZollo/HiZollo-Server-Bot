@@ -41,7 +41,7 @@ for (const file of autocompleteFiles) {
   client.autocomplete.set(autocomplete.name, autocomplete)
 }
 
-client.on('ready', () => {
+client.on('clientReady', () => {
   console.log(`${GREEN}[PROCESS]${RESET} Bot 已上線`)
   require('./features/presence.js')(client)
   require('./features/timeweaver.js')(client, '572733182412193792')
