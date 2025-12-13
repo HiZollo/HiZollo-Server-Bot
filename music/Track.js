@@ -24,7 +24,7 @@ class Track {
   async getStream(startTimeMs = 0) {
     if (isNaN(+startTimeMs)) startTimeMs = 0
     if (startTimeMs < 0) startTimeMs = 0
-    this.starTimeMs = startTimeMs
+    this.startMs = startTimeMs
 
     const mediaURL = await this.adapter.getResourceURL(this.inputURL)
     const FFMPEG_OPUS_ARGUMENTS = ['-i', mediaURL, '-ss', ~~(this.starTimeMs)/1000, '-analyzeduration', '0', '-loglevel', '0', '-acodec', 'libopus', '-f', 'opus', '-ar', '48000', '-ac', '2']
