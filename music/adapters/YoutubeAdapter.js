@@ -1,13 +1,13 @@
-const { exec } = require('child_process')
+const { execute } = require('../../utils/execute.js')
 
 const YoutubeAdapter = {
   isVideoURL(url) {
-    const urlRegex = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/gi
+    const urlRegex = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/i
     return urlRegex.test(url)
   },
 
   isPlaylistURL(url) {
-    const listRegex = /^.*(list=)([^#\&\?]*).*/gi
+    const listRegex = /^.*(list=)([^#\&\?]*).*/i
     return this.isVideoURL(url) && listRegex.test(url)
   },
 
@@ -27,8 +27,8 @@ const YoutubeAdapter = {
   async getBulkTrackInfo(url) {
     const urls = await this._resolvePlaylistToURL(url)
     return Promise.allSettled(urls.map(this.getMetadata.bind(this)))
-      .then(data => {
-        return data
+      .then(results => {
+        return results
           .filter(p => p.status === 'fulfilled')
           .map(p => p.value)
           .map(metadata => ({ inputURL: metadata.url, metadata }))
@@ -37,34 +37,28 @@ const YoutubeAdapter = {
 
   search(query, limit = 10) {
     return this._search(query, limit)
-      .then((results) => {
-        return results.map(result => ({ url: result.url, title: result.title }));
+      .then(results => {
+        return results.map(result => ({ url: result.url, title: result.title }))
       })
   },
 
-  async _search(query, limit) {
-    return new Promise((resolve, reject) => {
-      exec(`yt-dlp "ytsearch${limit}:${query}" --dump-json --flat-playlist --skip-download`, (err, stdout, stderr) => {
-        if (err) return reject(err)
-
-        try {
-          const results = stdout.split('\n').filter(line => line.trim()).map(line => JSON.parse(line))
-
-          resolve(results)
-        } catch (e) {
-          reject(e)
-        }
-      })
+  _search(query, limit) {
+    if (isNaN(+limit)) throw Error('limit must be a number')
+    return execute('yt-dlp', [
+      `ytsearch${limit}:${query}`,
+      '--dump-json',
+      '--flat-playlist',
+      '--skip-download'
+    ]).then(stdout => {
+      return stdout.split('\n')
+        .filter(line => line.trim())
+        .map(line => JSON.parse(line))
     })
   },
 
   getResourceURL(url) {
-    return new Promise((resolve, reject) => {
-      exec(`yt-dlp -i -x --get-url --geo-bypass ${url}`, (err, stdout, stderr) => {
-        if (err) return reject(err)
-        resolve(stdout)
-      })
-    })
+    return execute('yt-dlp', ['-i', '-x', '--get-url', '--geo-bypass', '--', url])
+      .then(stdout => stdout.trim())
   },
 
   getMetadata(url) {
@@ -87,24 +81,16 @@ const YoutubeAdapter = {
   },
 
   _getDumpData(url) {
-    return new Promise((resolve, reject) => {
-      exec(`yt-dlp -i -x --dump-json --flat-playlist --skip-download --geo-bypass ${url}`, (err, stdout, stderr) => {
-        if (err) return reject(err)
-        resolve(JSON.parse(stdout))
-      })
-    })
+    return execute('yt-dlp', [
+      '-i', '-x', '--dump-json', '--flat-playlist', '--skip-download', '--geo-bypass', '--', url
+    ]).then(stdout => JSON.parse(stdout))
   },
 
   _resolvePlaylistToURL(url) {
-    return new Promise((resolve, reject) => {
-      exec(`yt-dlp -i -x --get-url --flat-playlist --skip-download --geo-bypass "${url}"`, (err, stdout, stderr) => {
-        if (err) return reject(err)
-        const results = stdout.split('\n').filter(line => line.trim())
-        resolve(results)
-      })
-    })
+    return execute('yt-dlp', [
+      '-i', '-x', '--get-url', '--flat-playlist', '--skip-download', '--geo-bypass', '--', url
+    ]).then(stdout => stdout.split('\n').filter(line => line.trim()))
   }
-
-}
+};
 
 module.exports = YoutubeAdapter

@@ -2,3 +2,4 @@
 node_modules
 timeweaver.txt
 *.swp
+.DS_Store
