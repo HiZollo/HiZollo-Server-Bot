@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2021-2026 HiZollo Dev Team
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Chocomint Ice
 新一代薄荷巧克力冰淇淋機器人
 

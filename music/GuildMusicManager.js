@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021-2026 HiZollo Dev Team
+//
+// SPDX-License-Identifier: EPL-2.0
+
 const { ChannelType, EmbedBuilder, PermissionsBitField } = require('discord.js')
 const { createAudioPlayer, entersState, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice')
 const Track = require('./Track')

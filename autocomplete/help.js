@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021-2026 HiZollo Dev Team
+//
+// SPDX-License-Identifier: EPL-2.0
+
 module.exports = {
   name: 'help',
   '指令名稱': function(interaction) {

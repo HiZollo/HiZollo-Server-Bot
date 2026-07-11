@@ -1,0 +1,7 @@
+version = 1
+
+[[annotations]]
+path = ["package-lock.json", "package.json"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2021-2026 HiZollo Dev Team"
+SPDX-License-Identifier = "WTFPL"

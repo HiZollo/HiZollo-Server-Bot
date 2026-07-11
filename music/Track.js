@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021-2026 HiZollo Dev Team
+//
+// SPDX-License-Identifier: EPL-2.0
+
 const { createAudioResource, StreamType } = require('@discordjs/voice')
 const prism = require('prism-media')
 const { EmbedBuilder } = require('discord.js')

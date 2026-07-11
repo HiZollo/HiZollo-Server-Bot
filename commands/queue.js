@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021-2026 HiZollo Dev Team
+//
+// SPDX-License-Identifier: EPL-2.0
+
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, MessageFlags, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js')
 
 const ENTRY_PER_PAGE = 10

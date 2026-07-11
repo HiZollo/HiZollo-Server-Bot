@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2021-2026 HiZollo Dev Team
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Music Adapter
 Music Adapter 是一個符合 `Adapter` 介面的物件，用於在 `GuildMusicManager` 中處理來自不同音樂來源的音樂資料。只要某個物件實現了這個介面，它就能被 `GuildMusicManager` 使用，來處理特定音樂平台或來源的音樂。
 
