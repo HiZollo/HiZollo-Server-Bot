@@ -18,3 +18,12 @@ Chocomint Ice 的科學家在研究過程中無意間發現，薄荷與巧克力
 
 ## 薄荷巧克力冰淇淋國歌
 [![薄荷巧克力冰淇淋](https://i.ytimg.com/vi/pfkBYHFZAt8/maxresdefault.jpg)](https://youtu.be/pfkBYHFZAt8)
+
+## 授權條款
+本儲存庫符合 [REUSE 規範](https://reuse.software/)。
+- 主要原始碼採用 EPL-2.0 授權。
+- README 與說明文件採用 CC-BY-4.0 授權。
+- 生成的檔案（`package.json`、`package-lock.json`）與 GitHub Actions 採用 WTFPL 授權。
+
+有關個別檔案的確切授權，請參閱其各自的檔案標頭與 [LICENSES/](LICENSES/) 目錄。
+
