@@ -29,14 +29,22 @@ const YoutubeAdapter = {
   },
 
   async getBulkTrackInfo(url) {
-    const urls = await this._resolvePlaylistToURL(url)
-    return Promise.allSettled(urls.map(this.getMetadata.bind(this)))
-      .then(results => {
-        return results
-          .filter(p => p.status === 'fulfilled')
-          .map(p => p.value)
-          .map(metadata => ({ inputURL: metadata.url, metadata }))
+    const stdout = await execute('yt-dlp', [
+      '-i', '-x', '--dump-json', '--skip-download', '--geo-bypass', '--', url
+    ])
+
+    return stdout.split('\n')
+      .filter(line => line.trim())
+      .map(line => {
+        try {
+          const data = JSON.parse(line)
+          const metadata = this._makeMetadataFromDumpData(data)
+          return { inputURL: metadata.url, metadata }
+        } catch (err) {
+          return null 
+        }
       })
+      .filter(item => item)
   },
 
   search(query, limit = 10) {
