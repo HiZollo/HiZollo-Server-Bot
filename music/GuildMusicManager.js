@@ -49,7 +49,7 @@ class GuildMusicManager {
     if (!this.canAutoUnsuppress(interaction)) return
 
     if (this.queue.length >= this.maxQueueSize) {
-      interaction.followUp(`隊列已超過上限 ${this.maxQueueSize} 首，請等待目前的歌曲播放完畢，或是移除一些歌曲後再試`).then(msg => {
+      interaction.editReply({ content: `隊列已超過上限 ${this.maxQueueSize} 首，請等待目前的歌曲播放完畢，或是移除一些歌曲後再試`, components: [], embeds: [] }).then(msg => {
         setTimeout(() => msg.delete(), 5000)
       })
       return
@@ -71,10 +71,10 @@ class GuildMusicManager {
       const track = new Track(this.client, inputURL, metadata, interaction.member, adapter)
       this.queue.push(track)
 
-      await interaction.followUp({ embeds: [track.getQueuedEmbed()] })
+      await interaction.editReply({ embeds: [track.getQueuedEmbed()], components: [] })
     } catch (e) {
       console.error(e)
-      return interaction.followUp('目前無法正確播放這首歌曲')
+      return interaction.editReply({ content: '目前無法正確播放這首歌曲', components: [], embeds: [] })
     }
 
     if (!this.isPlaying) {
@@ -87,7 +87,7 @@ class GuildMusicManager {
   }
 
   async playlistWithAdapter(interaction, query, adapter) {
-    const message = await interaction.followUp('解析播放清單中，若播放清單過長，可能會花上幾分鐘，請耐心等候......')
+    const message = await interaction.editReply({ content: '解析播放清單中，若播放清單過長，可能會花上幾分鐘，請耐心等候......', components: [], embeds: [] })
 
     try {
       const data = await adapter.getBulkTrackInfo(query)
@@ -98,10 +98,10 @@ class GuildMusicManager {
 
       if (!data.length) {
         res.setDescription('很遺憾，這個播放清單中沒有我可以播放的樂曲')
-        return message.edit({ content: '', embeds: [res] }).catch(console.error)
+        return message.edit({ content: '', embeds: [res], components: [] }).catch(console.error)
       }
       
-      await message.edit('播放清單解析完成，正在加入隊列中......').catch(console.error)
+      await message.edit({ content: '播放清單解析完成，正在加入隊列中......', components: [], embeds: [] }).catch(console.error)
 
       const tracks = data.map(({ inputURL, metadata }) => new Track(this.client, inputURL, metadata, interaction.member, adapter))
       const thumbnail = data.find(track => track.metadata.thumbnail)?.metadata?.thumbnail
@@ -112,10 +112,10 @@ class GuildMusicManager {
 
       if (thumbnail) res.setThumbnail(thumbnail)
 
-      await message.edit({ content: '', embeds: [res] }).catch(console.error)
+      await message.edit({ content: '', embeds: [res], components: [] }).catch(console.error)
     } catch (e) {
       console.error(e)
-      return message.edit('出現未知錯誤，已停止').catch(console.error)
+      return message.edit({ content: '出現未知錯誤，已停止', components: [], embeds: [] }).catch(console.error)
     }
 
     if (!this.isPlaying) {
