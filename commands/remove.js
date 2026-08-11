@@ -44,8 +44,6 @@ module.exports = {
     const start = interaction.options.getInteger('起始歌曲編號') ?? 1
     const end = Math.min(interaction.options.getInteger('結尾歌曲編號') ?? start, dj.queue.length)
 
-    console.log(start, end)
-    
     if (start > end) {
       res.setDescription('結尾怎麼會小於開頭呢？這樣怎麼對？')
       return interaction.reply({ embeds: [res], flags: MessageFlags.Ephemeral })
