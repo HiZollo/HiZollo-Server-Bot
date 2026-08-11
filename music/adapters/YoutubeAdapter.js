@@ -66,6 +66,7 @@ const YoutubeAdapter = {
       return stdout.split('\n')
         .filter(line => line.trim())
         .map(line => JSON.parse(line))
+        .filter(result => result.ie_key === 'Youtube')
     })
   },
 
