@@ -27,6 +27,10 @@ module.exports = {
       return interaction.reply({ embeds: [res], flags: MessageFlags.Ephemeral })
     }
 
+    if (!dj.nowPlaying) {
+      return interaction.reply({ content: '目前沒有正在播放的歌曲，遙控器沒東西可以遙控', flags: MessageFlags.Ephemeral })
+    }
+
     await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
     try {
