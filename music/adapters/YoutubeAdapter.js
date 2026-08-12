@@ -30,7 +30,7 @@ const YoutubeAdapter = {
 
   async getBulkTrackInfo(url) {
     const stdout = await execute('yt-dlp', [
-      '-i', '-x', '--dump-json', '--skip-download', '--geo-bypass', '--', url
+      '--js-runtimes', 'node', '-i', '-x', '--dump-json', '--skip-download', '--geo-bypass', '--', url
     ])
 
     return stdout.split('\n')
@@ -57,6 +57,7 @@ const YoutubeAdapter = {
   _search(query, limit) {
     if (isNaN(+limit)) throw Error('limit must be a number')
     return execute('yt-dlp', [
+      '--js-runtimes', 'node',
       `ytsearch${limit}:${query}`,
       '--dump-json',
       '--flat-playlist',
@@ -65,11 +66,12 @@ const YoutubeAdapter = {
       return stdout.split('\n')
         .filter(line => line.trim())
         .map(line => JSON.parse(line))
+        .filter(result => result.ie_key === 'Youtube')
     })
   },
 
   getResourceURL(url) {
-    return execute('yt-dlp', ['-i', '-x', '--get-url', '--geo-bypass', '--', url])
+    return execute('yt-dlp', ['--js-runtimes', 'node', '-i', '-x', '--get-url', '--geo-bypass', '--', url])
       .then(stdout => stdout.trim())
   },
 
@@ -94,13 +96,13 @@ const YoutubeAdapter = {
 
   _getDumpData(url) {
     return execute('yt-dlp', [
-      '-i', '-x', '--dump-json', '--flat-playlist', '--skip-download', '--geo-bypass', '--', url
+      '--js-runtimes', 'node', '-i', '-x', '--dump-json', '--flat-playlist', '--skip-download', '--geo-bypass', '--', url
     ]).then(stdout => JSON.parse(stdout))
   },
 
   _resolvePlaylistToURL(url) {
     return execute('yt-dlp', [
-      '-i', '-x', '--get-url', '--flat-playlist', '--skip-download', '--geo-bypass', '--', url
+      '--js-runtimes', 'node', '-i', '-x', '--get-url', '--flat-playlist', '--skip-download', '--geo-bypass', '--', url
     ]).then(stdout => stdout.split('\n').filter(line => line.trim()))
   }
 };

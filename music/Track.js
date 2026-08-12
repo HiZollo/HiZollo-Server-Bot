@@ -31,7 +31,7 @@ class Track {
     this.startMs = startTimeMs
 
     const mediaURL = await this.adapter.getResourceURL(this.inputURL)
-    const FFMPEG_OPUS_ARGUMENTS = ['-i', mediaURL, '-ss', ~~(this.starTimeMs)/1000, '-analyzeduration', '0', '-loglevel', '0', '-acodec', 'libopus', '-f', 'opus', '-ar', '48000', '-ac', '2']
+    const FFMPEG_OPUS_ARGUMENTS = ['-i', mediaURL, '-ss', ~~(this.startMs)/1000, '-analyzeduration', '0', '-loglevel', '0', '-acodec', 'libopus', '-f', 'opus', '-ar', '48000', '-ac', '2']
     const RECONNECT_ARGUMENTS = ['-reconnect', '1', '-reconnect_streamed', '1', '-reconnect_delay_max', '5']
     const stream = new prism.FFmpeg({
       args: [...RECONNECT_ARGUMENTS, ...FFMPEG_OPUS_ARGUMENTS]

@@ -116,7 +116,6 @@ module.exports = {
         }
 
         const index = i.values[0]
-        message.delete()
         return results[index]
       }).catch(() => {
         message.delete()
@@ -127,11 +126,11 @@ module.exports = {
     if (!result) return
 
     try {
-      dj.playWithAdapter(interaction, result.url, adapter)
+      await dj.playWithAdapter(interaction, result.url, adapter)
     } catch (e) {
       console.error(e)
       res.setDescription('無法播放此歌曲')
-      return interaction.followUp({ embeds: [res] })
+      return interaction.editReply({ embeds: [res], components: [] })
     }
 
   }

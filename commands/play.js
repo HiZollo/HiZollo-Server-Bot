@@ -42,7 +42,7 @@ module.exports = {
     } catch (err) {
       console.error(err)
       res.setDescription('播放時發生錯誤，可能是因為網址錯誤或是無法播放此網址的音樂\n如果要搜尋，請使用 `/search` 指令')
-      return interaction.followUp({ embeds: [res] })
+      return interaction.editReply({ embeds: [res] })
     }
 
   }
