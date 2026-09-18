@@ -16,7 +16,10 @@ const reminders = {
   'notdeleted': '當你發現 HiZollo 沒有把訊息刪乾淨時，其實那只是 Discord 的顯示問題，重新整理之後你就會發現訊息被刪掉了',
   'timeweaver': '以 UTC+8 為準，在每天 00:00:00 - 00:09:59 這段時間內於 <#572733182412193794> 或 <#774937521275666432> 中第一個講出「跨日大師」的人，將會獲得跨日大師身份並載入史冊。此身份每日重置。',
   'python': (interaction, user) => { 
-    interaction.editReply(compoundReminder('Python 在這裡是禁語，不能討論的，他是絕對的邪教。在這裡討論有關 Python 的事情都有可能遭受極大的懲罰', user)).then(msg => {
+    interaction.editReply({ 
+      content: compoundReminder('Python 在這裡是禁語，不能討論的，他是絕對的邪教。在這裡討論有關 Python 的事情都有可能遭受極大的懲罰', user),
+      allowedMentions: { parse: ['users'] }
+    }).then(msg => {
       setTimeout(() => { msg.edit(msg.content.replace(/Python/g, '[敏感字詞已和諧]')) }, 1984)
     })
   }
@@ -50,7 +53,10 @@ module.exports = {
       return
     }
 
-    await interaction.editReply(compoundReminder(reminderTextOrAction, user))
+    await interaction.editReply({
+      content: compoundReminder(reminderTextOrAction, user),
+      allowedMentions: { parse: ['users'] }
+    })
   }
 }
 
