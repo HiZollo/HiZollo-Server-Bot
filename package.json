@@ -4,10 +4,10 @@
   "description": "A Discord bot used in the HiZollo Official Discord server.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "DEVMODE=true node index.js",
-    "deploy": "node deploy/deploy.js",
-    "clear": "node deploy/clear.js"
+    "start": "dotenv run node index.js",
+    "dev": "DEVMODE=true dotenv run node index.js",
+    "deploy": "dotenv run node deploy/deploy.js",
+    "clear": "dotenv run node deploy/clear.js"
   },
   "repository": {
     "type": "git",

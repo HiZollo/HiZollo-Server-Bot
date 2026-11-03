@@ -4,7 +4,6 @@
 
 const https = require('https')
 
-require('dotenv').config()
 const  { TOKEN } = process.env
 
 const GuildId = process.argv[2]

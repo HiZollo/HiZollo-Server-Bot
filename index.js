@@ -4,7 +4,6 @@
 
 const { Client, Collection, GatewayIntentBits } = require('discord.js')
 const { readdirSync } = require('fs')
-require('dotenv').config()
 
 const RED = '\x1b[31m'
 const GREEN = '\x1b[32m'

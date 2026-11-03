@@ -5,7 +5,6 @@
 const https = require('node:https')
 const fs = require('node:fs')
 
-require('dotenv').config()
 const  { TOKEN } = process.env
 
 const command_type_resolve = {
